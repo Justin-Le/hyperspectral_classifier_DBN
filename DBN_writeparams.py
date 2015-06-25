@@ -15,7 +15,7 @@ from rbm import RBM
 
 # start-snippet-1
 class DBN(object):
-    """Deep Belief Network
+    """"Deep Belief Network
 
     A deep belief network is obtained by stacking several RBMs on top of each
     other. The hidden layer of the RBM at layer `i` becomes the input of the
@@ -23,7 +23,7 @@ class DBN(object):
     network, and the hidden layer of the last RBM represents the output. When
     used for classification, the DBN is treated as a MLP, by adding a logistic
     regression layer on top.
-    """
+    """"
 
     def __init__(self, numpy_rng, theano_rng=None, n_ins=784,
                  hidden_layers_sizes=[500, 500], n_outs=10):
