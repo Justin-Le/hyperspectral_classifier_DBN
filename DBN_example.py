@@ -54,6 +54,8 @@ def test_DBN_example(dataset='mnist.pkl.gz', batch_size=10):
     loaded_weights[1] = numpy.loadtxt('weights_layer1.txt')
     loaded_weights[2] = numpy.loadtxt('weights_layer2.txt')
 
+    # Note: Use DBN_writeparams to obtain the above text files after training
+
     ############################################################
     # Load weights of first layer
     ############################################################
