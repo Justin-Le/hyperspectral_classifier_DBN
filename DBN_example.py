@@ -50,19 +50,30 @@ def test_DBN_example(dataset='mnist.pkl.gz', batch_size=10):
     # If the text file is a list of weights,
     # delimited by whitespace,
     # then loaded_weights[i] is a numpy array of floats
+    loaded_weights = [numpy.asarray([0])] * 3
     loaded_weights[0] = numpy.loadtxt('weights_layer0.txt')
     loaded_weights[1] = numpy.loadtxt('weights_layer1.txt')
     loaded_weights[2] = numpy.loadtxt('weights_layer2.txt')
 
-    # Note: Use DBN_writeparams to obtain the above text files after training
+    # As above, loaded_biases[i] is a numpy array of floats
+    loaded_biases = [numpy.asarray([0])] * 3
+    loaded_biases[0] = numpy.loadtxt('biases_layer0.txt')
+    loaded_biases[1] = numpy.loadtxt('biases_layer1.txt')
+    loaded_biases[2] = numpy.loadtxt('biases_layer2.txt')
 
-    ############################################################
-    # Load weights of first layer
-    ############################################################
+    # Note: Use DBN_writeparams to obtain the above text files after training
 
     # A list of matrices,
     # where each matrix represents the weights of one layer
     weight_matrices = [[0]] * len(hidden_layers_sizes)
+
+    # A list of matrices,
+    # where each matrix represents the biases of one layer
+    bias_matrices = [[0]] * len(hidden_layers_sizes)
+
+    ############################################################
+    # Load weights of first layer
+    ############################################################
 
     # The first layer has a weight matrix with dimensions of
     # (length of input image vector) x (width of first hidden layer)
@@ -75,8 +86,8 @@ def test_DBN_example(dataset='mnist.pkl.gz', batch_size=10):
 	row.append(loaded_weights[0][i*n_cols : (i+1)*n_cols])
 	
 	# append the row to the matrix
-	weight_matrices[0].append(row)
-	
+	weight_matrices[0].append(row)	
+
     ############################################################
     # Load weights of each layer after the first layer
     ############################################################
@@ -93,6 +104,15 @@ def test_DBN_example(dataset='mnist.pkl.gz', batch_size=10):
 	    # append the row to the matrix
 	    weight_matrices[layer_index].append(row)
 
+    ############################################################
+    # Load biases of each layer 
+    ############################################################
+
+    # In each layer, a bias matrix is initialized as a row vector
+    for i in xrange(len(hidden_layers_sizes)):		
+	# append the bias vector for each layer
+	bias_matrices[i].append(loaded_biases[i][i*n_cols : (i+1)*n_cols])
+	
     # Store weight_matrices as a numpy array in order to use it
     # in setting the value of the shared variables that hold
     # the weights in each layer
