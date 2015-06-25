@@ -277,10 +277,10 @@ class DBN(object):
     # list 1: numpy arrays of weights, where each array represents one layer
     # list 2: numpy arrays of biases, where each array represents one layer
     def return_params(self):
-        final_weights = [0]*len(sigmoid_layers[i])
-	final_biases = [0]*len(sigmoid_layers[i])
+        final_weights = [0]*len(self.sigmoid_layers)
+	final_biases = [0]*len(self.sigmoid_layers)
 
- 	for i in xrange(len(sigmoid_layers[i])):
+ 	for i in xrange(len(self.sigmoid_layers)):
             final_weights[i] = self.sigmoid_layers[i].W.get_value()
 	    final_biases[i] = self.sigmoid_layers[i].b.get_value()
     
@@ -449,13 +449,16 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=1,
 
     final_weights, final_biases = dbn.return_params()
 
+    # Print weights and biases
     print final_weights
+    print 'End list of weights'
     print final_biases
- 
+    print 'End list of biases'
+    
     # Print number of layers (these two lengths should match)
     print(
         (
-            'number of weight layers: %i\n number of bias layers: %i'
+            'number of weight layers: %i\nnumber of bias layers: %i'
         ) % (len(final_weights), len(final_biases))
     )
 
