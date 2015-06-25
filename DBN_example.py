@@ -33,26 +33,72 @@ def test_DBN_example(dataset='mnist.pkl.gz', batch_size=10):
     example_set_x, example_set_y = datasets[0]
 
     n_batches = example_set_x.get_value(borrow=True).shape[0] / batch_size 
-    print ('number of batches: ', n_batches)
 
-    print 'Loading model . . . '
+    print(('number of batches: %i') % (n_batches))
 
     numpy_rng = numpy.random.RandomState(123)
-    n_ins=28 * 28
-    hidden_layers_sizes=[1000, 1000, 1000]
-    n_outs=10
-    dbn = DBN(numpy_rng=numpy_rng, n_ins=28 * 28,
-              hidden_layers_sizes=[1000, 1000, 1000],
-              n_outs=10)
+    n_ins = 28*28
+    hidden_layers_sizes = [1, 1, 1]
+    n_outs = 10
 
+    dbn = DBN(numpy_rng=numpy_rng, n_ins=n_ins,
+              hidden_layers_sizes=hidden_layers_sizes,
+              n_outs=n_outs)
+
+    print 'Loading model . . . '
     
-    ####################
-    # Load model ####### 
-    ####################     
+    # If the text file is a list of weights,
+    # delimited by whitespace,
+    # then loaded_weights[i] is a numpy array of floats
+    loaded_weights[0] = numpy.loadtxt('weights_layer0.txt')
+    loaded_weights[1] = numpy.loadtxt('weights_layer1.txt')
+    loaded_weights[2] = numpy.loadtxt('weights_layer2.txt')
 
-    # dbn.sigmoid_layer.W = theano.shared(value=loaded_model, name='W', borrow=True)
-    # where loaded_model is a numpy ndarray of size(n_ins, n_out)
+    ############################################################
+    # Load weights of first layer
+    ############################################################
 
+    # A list of matrices,
+    # where each matrix represents the weights of one layer
+    weight_matrices = [[0]] * len(hidden_layers_sizes)
+
+    # The first layer has a weight matrix with dimensions of
+    # (length of input image vector) x (width of first hidden layer)
+    n_rows = n_ins
+    n_cols = hidden_layers_sizes[0]
+
+    for i in xrange(n_rows):
+	# form a new row in the matrix
+	row = []
+	row.append(loaded_weights[0][i*n_cols : (i+1)*n_cols])
+	
+	# append the row to the matrix
+	weight_matrices[0].append(row)
+	
+    ############################################################
+    # Load weights of each layer after the first layer
+    ############################################################
+
+    for layer_index in xrange(1,len(hidden_layers_sizes)):
+	n_cols = hidden_layers_sizes[layer_index]
+	n_rows = hidden_layers_sizes[layer_index-1]
+
+	for i in xrange(n_rows):
+	    # form a new row in the matrix
+	    row = []
+	    row.append(loaded_weights[layer_index][i*n_cols : (i+1)*n_cols])
+
+	    # append the row to the matrix
+	    weight_matrices[layer_index].append(row)
+
+    # Store weight_matrices as a numpy array in order to use it
+    # in setting the value of the shared variables that hold
+    # the weights in each layer
+    weight_matrices_array = numpy.asarray(weight_matrices)
+
+    for layer_index in xrange(0,len(hidden_layers_sizes)):
+        dbn.sigmoid_layers[layer_index].W.set_value(weight_matrices_array[layer_index])
+        
     # start-snippet-2
      
     # example index
