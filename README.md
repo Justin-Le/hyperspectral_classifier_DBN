@@ -5,4 +5,4 @@ DBN_writeparams is intended to replace DBN.
 
 To do:
 
-Modify DBN_example to load datasets and trained weights/biases from a text file.
+Modify DBN_example to load biases and datasets from a text file.
