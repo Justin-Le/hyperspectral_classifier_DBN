@@ -13,7 +13,7 @@ from rbm import RBM
 from DBN import DBN
 
 def test_DBN_example(dataset='mnist.pkl.gz', batch_size=10):
-    """"
+    """
     Tests a trained DBN on a set of images.
 
     For each batch:
