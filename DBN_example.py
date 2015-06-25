@@ -23,7 +23,7 @@ def test_DBN_example(dataset='mnist.pkl.gz', batch_size=10):
     (the class whose probability is highest given x)
 
     :type dataset: string
-    :param dataset: path to the pickled data
+    :param dataset: path to the pickled dataset
     :type batch_size: int
     :param batch_size: the size of a minibatch
     """
@@ -53,6 +53,8 @@ def test_DBN_example(dataset='mnist.pkl.gz', batch_size=10):
     loaded_weights[0] = numpy.loadtxt('weights_layer0.txt')
     loaded_weights[1] = numpy.loadtxt('weights_layer1.txt')
     loaded_weights[2] = numpy.loadtxt('weights_layer2.txt')
+
+    # Note: Use DBN_writeparams to obtain the above text files after training
 
     ############################################################
     # Load weights of first layer
