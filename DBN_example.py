@@ -38,7 +38,7 @@ def test_DBN_example(dataset='mnist.pkl.gz', batch_size=10):
 
     numpy_rng = numpy.random.RandomState(123)
     n_ins = 28*28
-    hidden_layers_sizes = [1, 1, 1]
+    hidden_layers_sizes = [10, 10, 10]
     n_outs = 10
 
     dbn = DBN(numpy_rng=numpy_rng, n_ins=n_ins,
@@ -55,6 +55,8 @@ def test_DBN_example(dataset='mnist.pkl.gz', batch_size=10):
     loaded_weights[1] = numpy.loadtxt('weights_layer1.txt')
     loaded_weights[2] = numpy.loadtxt('weights_layer2.txt')
 
+    # print loaded_weights
+
     # As above, loaded_biases[i] is a numpy array of floats
     loaded_biases = [numpy.asarray([0])] * 3
     loaded_biases[0] = numpy.loadtxt('biases_layer0.txt')
@@ -62,65 +64,21 @@ def test_DBN_example(dataset='mnist.pkl.gz', batch_size=10):
     loaded_biases[2] = numpy.loadtxt('biases_layer2.txt')
 
     # Note: Use DBN_writeparams to obtain the above text files after training
-
-    # A list of matrices,
-    # where each matrix represents the weights of one layer
-    weight_matrices = [[0]] * len(hidden_layers_sizes)
-
-    # A list of matrices,
-    # where each matrix represents the biases of one layer
-    bias_matrices = [[0]] * len(hidden_layers_sizes)
-
-    ############################################################
-    # Load weights of first layer
-    ############################################################
-
-    # The first layer has a weight matrix with dimensions of
-    # (length of input image vector) x (width of first hidden layer)
-    n_rows = n_ins
-    n_cols = hidden_layers_sizes[0]
-
-    for i in xrange(n_rows):
-	# form a new row in the matrix
-	row = []
-	row.append(loaded_weights[0][i*n_cols : (i+1)*n_cols])
-	
-	# append the row to the matrix
-	weight_matrices[0].append(row)	
-
-    ############################################################
-    # Load weights of each layer after the first layer
-    ############################################################
-
-    for layer_index in xrange(1,len(hidden_layers_sizes)):
-	n_cols = hidden_layers_sizes[layer_index]
-	n_rows = hidden_layers_sizes[layer_index-1]
-
-	for i in xrange(n_rows):
-	    # form a new row in the matrix
-	    row = []
-	    row.append(loaded_weights[layer_index][i*n_cols : (i+1)*n_cols])
-
-	    # append the row to the matrix
-	    weight_matrices[layer_index].append(row)
-
-    ############################################################
-    # Load biases of each layer 
-    ############################################################
-
-    # In each layer, a bias matrix is initialized as a row vector
-    for i in xrange(len(hidden_layers_sizes)):		
-	# append the bias vector for each layer
-	bias_matrices[i].append(loaded_biases[i][i*n_cols : (i+1)*n_cols])
-	
-    # Store weight_matrices as a numpy array in order to use it
-    # in setting the value of the shared variables that hold
-    # the weights in each layer
-    weight_matrices_array = numpy.asarray(weight_matrices)
-
+           
     for layer_index in xrange(0,len(hidden_layers_sizes)):
-        dbn.sigmoid_layers[layer_index].W.set_value(weight_matrices_array[layer_index])
-        
+        dbn.sigmoid_layers[layer_index].W.set_value(loaded_weights[layer_index])
+        dbn.sigmoid_layers[layer_index].b.set_value(loaded_biases[layer_index])
+
+        print (('Dimensions of layer %i weights: ') % (layer_index))
+        print loaded_weights[layer_index].shape
+        print (('Dimensions of layer %i biases: ') % (layer_index))
+        print loaded_biases[layer_index].shape
+
+        print (('Layer %i weights: ') % (layer_index)) 
+        print loaded_weights[layer_index]
+        print (('Layer %i biases: ') % (layer_index)) 
+        print loaded_biases[layer_index]
+       
     # start-snippet-2
      
     # example index
