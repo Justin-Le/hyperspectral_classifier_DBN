@@ -1,1 +1,1 @@
-Work in progress.
+DBN_writeparams is intended to replace DBN.
