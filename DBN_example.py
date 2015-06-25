@@ -23,7 +23,7 @@ def test_DBN_example(dataset='mnist.pkl.gz', batch_size=10):
     (the class whose probability is highest given x)
 
     :type dataset: string
-    :param dataset: path to the pickled dataset
+    :param dataset: path to the pickled data
     :type batch_size: int
     :param batch_size: the size of a minibatch
     """
