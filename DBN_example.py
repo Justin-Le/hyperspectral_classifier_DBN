@@ -13,7 +13,7 @@ from rbm import RBM
 from DBN import DBN
 
 def test_DBN_example(dataset='mnist.pkl.gz', batch_size=10):
-    """
+    """"
     Tests a trained DBN on a set of images.
 
     For each batch:
@@ -26,7 +26,7 @@ def test_DBN_example(dataset='mnist.pkl.gz', batch_size=10):
     :param dataset: path to the pickled data
     :type batch_size: int
     :param batch_size: the size of a minibatch
-    """
+    """"
 
     datasets = load_data(dataset)
 
