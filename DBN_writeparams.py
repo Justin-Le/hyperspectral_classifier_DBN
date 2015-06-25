@@ -283,7 +283,12 @@ class DBN(object):
  	for i in xrange(len(self.sigmoid_layers)):
             final_weights[i] = self.sigmoid_layers[i].W.get_value()
 	    final_biases[i] = self.sigmoid_layers[i].b.get_value()
-    
+            
+            print (('Final weights in layer %i:') % (i))
+            print final_weights[i]
+            print (('Final biases in layer %i:') % (i))
+            print final_biases[i]
+
         return final_weights, final_biases
 
 def test_DBN(finetune_lr=0.1, pretraining_epochs=1,
@@ -324,7 +329,7 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=1,
     print '... building the model'
     # construct the Deep Belief Network
     dbn = DBN(numpy_rng=numpy_rng, n_ins=28 * 28,
-              hidden_layers_sizes=[1, 1, 1],
+              hidden_layers_sizes=[10, 10, 10],
               n_outs=10)
 
     # start-snippet-2
