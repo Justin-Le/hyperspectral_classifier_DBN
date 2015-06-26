@@ -33,8 +33,8 @@ def test_DBN_example(dataset='none', batch_size=10):
 
 	# Load images and ground truth from
 	# text files that are delimited by whitespace
-	imraw = numpy.loadtxt('pavia_centre_image_100rows1.txt')
-	gtraw = numpy.loadtxt('pavia_centre_groundtruth.txt')
+	imraw = numpy.loadtxt('pavia_centre_image_quarter.txt')[0:274]
+	gtraw = numpy.loadtxt('pavia_centre_groundtruth.txt')[0:274]
 
 	val_idx = 0
 	example_size = 102
@@ -76,31 +76,37 @@ def test_DBN_example(dataset='none', batch_size=10):
 
     # Create the DBN object
     numpy_rng = numpy.random.RandomState(123)
-    n_ins = 28*28
-    hidden_layers_sizes = [10, 10, 10]
-    n_outs = 10
+    n_ins = 102
+    hidden_layers_sizes = [30, 30]
+    n_outs = 5
 
-    dbn = DBN(numpy_rng=numpy_rng, n_ins=n_ins,
-              hidden_layers_sizes=hidden_layers_sizes,
-              n_outs=n_outs)
+    dbn = DBN(numpy_rng=numpy_rng, n_ins=102,
+              hidden_layers_sizes=[30, 30],
+              n_outs=5)
 
     print '\nLoading weights and biases . . .\n'
     
     # If the text file is a list of weights,
     # delimited by whitespace,
     # then loaded_weights[i] is a numpy array of floats
-    loaded_weights = [numpy.asarray([0])] * 3
+
+    # NOTE: CHANGE THE MULTIPLE OF loaded_weights TO THE NUMBER OF txt FILES LOADED
+    # i.e., if loaded_weights[k] exists, then the line should read:
+    # loaded_weights = [numpy.asarray([0])] * k
+
+    loaded_weights = [numpy.asarray([0])] * 2
     loaded_weights[0] = numpy.loadtxt('weights_layer0.txt')
     loaded_weights[1] = numpy.loadtxt('weights_layer1.txt')
-    loaded_weights[2] = numpy.loadtxt('weights_layer2.txt')
+    # loaded_weights[2] = numpy.loadtxt('weights_layer2.txt')
+    # Add as many layers as used in training
     
-    # As above, loaded_biases[i] is a numpy array of floats
-    loaded_biases = [numpy.asarray([0])] * 3
+    # As above
+    loaded_biases = [numpy.asarray([0])] * 2
     loaded_biases[0] = numpy.loadtxt('biases_layer0.txt')
     loaded_biases[1] = numpy.loadtxt('biases_layer1.txt')
-    loaded_biases[2] = numpy.loadtxt('biases_layer2.txt')
+    # loaded_biases[2] = numpy.loadtxt('biases_layer2.txt')
 
-    # Note: Use DBN_writeparams to obtain the above text files after training
+    # Note: Use DBN_writeparams to obtain the above text files
            
     for layer_index in xrange(0,len(hidden_layers_sizes)):
         dbn.sigmoid_layers[layer_index].W.set_value(loaded_weights[layer_index])
@@ -129,7 +135,7 @@ def test_DBN_example(dataset='none', batch_size=10):
             [index],
             dbn.logLayer.p_y_given_x,
             givens={
-                dbn.x: example_set_x[index*batch_size : (index+1)*batch_size]            
+                dbn.x: example_set_x[index*batch_size : (index+1)*batch_size]                
             }
         )
 
