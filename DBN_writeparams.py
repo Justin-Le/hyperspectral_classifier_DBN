@@ -15,7 +15,7 @@ from rbm import RBM
 
 # start-snippet-1
 class DBN(object):
-    """"Deep Belief Network
+    """Deep Belief Network
 
     A deep belief network is obtained by stacking several RBMs on top of each
     other. The hidden layer of the RBM at layer `i` becomes the input of the
@@ -23,9 +23,9 @@ class DBN(object):
     network, and the hidden layer of the last RBM represents the output. When
     used for classification, the DBN is treated as a MLP, by adding a logistic
     regression layer on top.
-    """"
+    """
 
-    def __init__(self, numpy_rng, theano_rng=None, n_ins=784,
+    def __init__(self, numpy_rng, theano_rng=None, n_ins=102,
                  hidden_layers_sizes=[500, 500], n_outs=10):
         """This class is made to support a variable number of layers.
 
@@ -293,7 +293,7 @@ class DBN(object):
 
 def test_DBN(finetune_lr=0.1, pretraining_epochs=1,
              pretrain_lr=0.01, k=1, training_epochs=1,
-             dataset='mnist.pkl.gz', batch_size=10):
+             dataset='none', batch_size=10):
     """
     Demonstrates how to train and test a Deep Belief Network.
 
@@ -314,12 +314,68 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=1,
     :type batch_size: int
     :param batch_size: the size of a minibatch
     """
+    if dataset == 'none':
+	print '\nLoading the image to be classified . . .\n'
 
-    datasets = load_data(dataset)
+	# Load images and ground truth from
+	# text files that are delimited by whitespace
+	imraw = numpy.loadtxt('pavia_centre_image_100rows1.txt')
+	gtraw = numpy.loadtxt('pavia_centre_groundtruth.txt')[0:100]
 
-    train_set_x, train_set_y = datasets[0]
-    valid_set_x, valid_set_y = datasets[1]
-    test_set_x, test_set_y = datasets[2]
+	val_idx = 0
+	example_size = 102
+	imlist = []
+
+	# imlist is a list of images,
+	# where each image is a list of values 
+	while val_idx < len(imraw):
+	  imlist.append(imraw[val_idx : val_idx + example_size])
+	  val_idx = val_idx + example_size
+
+	# Store images and ground truths as numpy arrays in shared variables
+	# in order to use them in Theano
+        borrow = True
+        train_set_x = theano.shared(numpy.asarray(imlist[0:80],
+                                               dtype=theano.config.floatX),
+                                 borrow=borrow)
+        train_set_y = T.cast(
+                                theano.shared(numpy.asarray(gtraw[0:80],
+                                               dtype=theano.config.floatX),
+                                 borrow=borrow),
+                                'int32'
+                            )
+        test_set_x = theano.shared(numpy.asarray(imlist[80:90],
+                                               dtype=theano.config.floatX),
+                                 borrow=borrow)
+        test_set_y = T.cast(
+                                theano.shared(numpy.asarray(gtraw[80:90],
+                                               dtype=theano.config.floatX),
+                                 borrow=borrow),
+                                'int32'
+                           )
+        valid_set_x = theano.shared(numpy.asarray(imlist[90:100],
+                                               dtype=theano.config.floatX),
+                                 borrow=borrow)
+        valid_set_y = T.cast(
+                                theano.shared(numpy.asarray(gtraw[90:100],
+                                               dtype=theano.config.floatX),
+                                 borrow=borrow),
+                                'int32'
+                            )
+ 
+        datasets = [(train_set_x, train_set_y), (valid_set_x, valid_set_y),
+            (test_set_x, test_set_y)]
+
+        print (('Dimensions of image set (pixels by bands-per-pixel): %s') % ((train_set_x.shape,)))
+        print (('Dimensions of ground truth set (number of pixel labels): %s') % ((train_set_y.shape,)))
+        print '\n'
+
+    else:
+	datasets = load_data(dataset)
+
+	train_set_x, train_set_y = datasets[0]
+	valid_set_x, valid_set_y = datasets[1]
+	test_set_x, test_set_y = datasets[2]
 
     # compute number of minibatches for training, validation and testing
     n_train_batches = train_set_x.get_value(borrow=True).shape[0] / batch_size
@@ -328,7 +384,7 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=1,
     numpy_rng = numpy.random.RandomState(123)
     print '... building the model'
     # construct the Deep Belief Network
-    dbn = DBN(numpy_rng=numpy_rng, n_ins=28 * 28,
+    dbn = DBN(numpy_rng=numpy_rng, n_ins=102,
               hidden_layers_sizes=[10, 10, 10],
               n_outs=10)
 
