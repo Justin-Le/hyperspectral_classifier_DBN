@@ -291,9 +291,9 @@ class DBN(object):
 
         return final_weights, final_biases
 
-def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
-             pretrain_lr=0.01, k=1, training_epochs=500,
-             dataset='none', batch_size=5):
+def test_DBN(finetune_lr=0.1, pretraining_epochs=1000,
+             pretrain_lr=0.01, k=1, training_epochs=3000,
+             dataset='none', batch_size=10):
     """
     Demonstrates how to train and test a Deep Belief Network.
 
@@ -319,8 +319,8 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
 
 	# Load images and ground truth from
 	# text files that are delimited by whitespace
-	imraw = numpy.loadtxt('pavia_centre_image_100rows1.txt')[0:72930]
-	gtraw = numpy.loadtxt('pavia_centre_groundtruth.txt')[0:715]
+	imraw = numpy.loadtxt('pavia_centre_image_eighth.txt')[0:7293000]
+	gtraw = numpy.loadtxt('pavia_centre_groundtruth.txt')[0:71500]
 
         print '\nDimensions of loaded image set: %s\n' % (imraw.shape,)
         print '\nDimensions of loaded ground truth: %s\n' % (gtraw.shape,)
@@ -340,29 +340,29 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
 	# Store images and ground truths as numpy arrays in shared variables
 	# in order to use them in Theano
         borrow = True
-        train_set_x = theano.shared(numpy.asarray(imlist[0:515],
+        train_set_x = theano.shared(numpy.asarray(imlist[0:51500],
                                                dtype=theano.config.floatX),
                                  borrow=borrow)
         train_set_y = T.cast(
-                                theano.shared(numpy.asarray(gtraw[0:515],
+                                theano.shared(numpy.asarray(gtraw[0:51500],
                                                dtype=theano.config.floatX),
                                  borrow=borrow),
                                 'int32'
                             )
-        test_set_x = theano.shared(numpy.asarray(imlist[515:615],
+        test_set_x = theano.shared(numpy.asarray(imlist[51500:61500],
                                                dtype=theano.config.floatX),
                                  borrow=borrow)
         test_set_y = T.cast(
-                                theano.shared(numpy.asarray(gtraw[515:615],
+                                theano.shared(numpy.asarray(gtraw[51500:61500],
                                                dtype=theano.config.floatX),
                                  borrow=borrow),
                                 'int32'
                            )
-        valid_set_x = theano.shared(numpy.asarray(imlist[615:715],
+        valid_set_x = theano.shared(numpy.asarray(imlist[61500:71500],
                                                dtype=theano.config.floatX),
                                  borrow=borrow)
         valid_set_y = T.cast(
-                                theano.shared(numpy.asarray(gtraw[615:715],
+                                theano.shared(numpy.asarray(gtraw[61500:71500],
                                                dtype=theano.config.floatX),
                                  borrow=borrow),
                                 'int32'
@@ -372,11 +372,11 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
             (test_set_x, test_set_y)]
 
         # Store as shared variable in order to print dimensions
-        train_set_y_shared = theano.shared(numpy.asarray(gtraw[0:515]))
+        train_set_y_shared = theano.shared(numpy.asarray(gtraw[0:51500]))
 
         # Check that the dimensions of an arbitrarily chosen set are equal to those specified above
         # (In this case, the training set was chosen.)
-        print (('\nDimensions of image set (pixels by bands-per-pixel): %s\n') % ((train_set_x.get_value().shape,)))
+        print (('\nDimensions of image set (pixels by bands-per-pixel): %s\n') % ((test_set_x.get_value().shape,)))
         print (('\nDimensions of ground truth set (number of pixel labels): %s\n') % ((train_set_y_shared.get_value().shape,)))
         
     else:
@@ -395,7 +395,7 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
     print '... building the model'
     # construct the DBN object
     dbn = DBN(numpy_rng=numpy_rng, n_ins=102,
-              hidden_layers_sizes=[10, 10],
+              hidden_layers_sizes=[30, 30],
               n_outs=10)
 
     # start-snippet-2
@@ -418,8 +418,10 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
             for batch_index in xrange(n_train_batches):
                 c.append(pretraining_fns[i](index=batch_index,
                                             lr=pretrain_lr))
+                # print 'Cost of batch %i: %d' % (batch_index, c[batch_index]) 
             print 'Pre-training layer %i, epoch %d, cost ' % (i, epoch),
             print numpy.mean(c)
+
 
     end_time = time.clock()
     # end-snippet-2
