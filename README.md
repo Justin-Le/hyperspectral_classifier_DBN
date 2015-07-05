@@ -1,25 +1,24 @@
-Download data from:
+Notes on the dataset:
 
-http://deeplearning.net/data/mnist/mnist.pkl.gz
+The Pavia Centre image and its groundtruth in .txt format are located in the Data directory.
 
-https://drive.google.com/open?id=0B-eVL_UCcyVwM09BMkFzZnZWbFU
- 
+Convert_mattotxt was used to convert the original .mat image and ground truth to .txt files. The original .mat files can be obtained from the [University of Palis Vasco] (http://www.ehu.eus/ccwintco/index.php?title=Hyperspectral_Remote_Sensing_Scenes). 
+
+The complete Pavia Centre image cannot be loaded on some machines due to memory restrictions. To avoid crashes, an eighth-image is loaded by default.
+
 ####################
 
-Notes:
+Notes on usage:
 
 DBN_writeparams is intended to replace DBN.
 
-Load_test_set is to be ignored. It is a template for the loading method used in DBN_example.
+The parameters of the DBN object should match in DBN_writeparams and DBN_example (e.g., n_ins, hidden_layers_sizes, n_outs).
 
-The parameters of the DBN object should match in DBN_writeparams and DBN_example.
-
-The complete Pavia Centre image cannot be loaded on some machines. To avoid crashes, a quarter-image is loaded by default.
+The number of numpy.savetxt lines for weights should match the number of elements in hidden_layers_sizes. Same for biases. Same for numpy.loadtxt in DBN_example.
 
 ####################
 
 To do:
 
-Continue training the DBN with the Pavia Centre image.
-Select n_outs.
-Modify DBN_example to classify a small portion of the Pavia Centre image.
+Create a module for loading trained weights and biases.
+Create eighths of the ground truth .txt file.
