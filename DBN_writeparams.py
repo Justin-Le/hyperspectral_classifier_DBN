@@ -26,7 +26,7 @@ class DBN(object):
     """
 
     def __init__(self, numpy_rng, theano_rng=None, n_ins=102,
-                 hidden_layers_sizes=[30, 30], n_outs=10):
+                 hidden_layers_sizes=[50, 50, 50, 50], n_outs=10):
         """This class is made to support a variable number of layers.
 
         :type numpy_rng: numpy.random.RandomState
@@ -291,8 +291,8 @@ class DBN(object):
 
         return final_weights, final_biases
 
-def test_DBN(finetune_lr=0.1, pretraining_epochs=1000,
-             pretrain_lr=0.01, k=1, training_epochs=3000,
+def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
+             pretrain_lr=0.01, k=1, training_epochs=300,
              dataset='none', batch_size=10):
     """
     Demonstrates how to train and test a Deep Belief Network.
@@ -395,7 +395,7 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=1000,
     print '... building the model'
     # construct the DBN object
     dbn = DBN(numpy_rng=numpy_rng, n_ins=102,
-              hidden_layers_sizes=[30, 30],
+              hidden_layers_sizes=[50, 50, 50, 50],
               n_outs=10)
 
     # start-snippet-2
