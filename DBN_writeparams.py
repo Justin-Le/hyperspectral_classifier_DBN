@@ -12,6 +12,7 @@ from logistic_sgd import LogisticRegression, load_data
 from mlp import HiddenLayer
 from rbm import RBM
 
+from load_txt_data import load_txt_data
 
 # start-snippet-1
 class DBN(object):
@@ -293,7 +294,7 @@ class DBN(object):
 
 def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
              pretrain_lr=0.01, k=1, training_epochs=300,
-             dataset='none', batch_size=10):
+             dataset='text', batch_size=10):
     """
     Demonstrates how to train and test a Deep Belief Network.
 
@@ -314,71 +315,9 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
     :type batch_size: int
     :param batch_size: the size of a minibatch
     """
-    if dataset == 'none':
-	print '\nLoading the image to be classified . . .\n'
+    if dataset == 'text':
+        datasets, train_set_x, train_set_y, valid_set_x, valid_set_y, test_set_x, test_set_y = load_txt_data()
 
-	# Load images and ground truth from
-	# text files that are delimited by whitespace
-	imraw = numpy.loadtxt('pavia_centre_image_eighth.txt')[0:7293000]
-	gtraw = numpy.loadtxt('pavia_centre_groundtruth.txt')[0:71500]
-
-        print '\nDimensions of loaded image set: %s\n' % (imraw.shape,)
-        print '\nDimensions of loaded ground truth: %s\n' % (gtraw.shape,)
-        
-	val_idx = 0
-	example_size = 102
-	imlist = []
-
-	# imlist is a list of images,
-	# where each image is a list of values 
-	while val_idx < len(imraw):
-	  imlist.append(imraw[val_idx : val_idx + example_size])
-	  val_idx = val_idx + example_size
-
-        print '\nNumber of loaded images: %s\n' % (len(imlist))
- 
-	# Store images and ground truths as numpy arrays in shared variables
-	# in order to use them in Theano
-        borrow = True
-        train_set_x = theano.shared(numpy.asarray(imlist[0:51500],
-                                               dtype=theano.config.floatX),
-                                 borrow=borrow)
-        train_set_y = T.cast(
-                                theano.shared(numpy.asarray(gtraw[0:51500],
-                                               dtype=theano.config.floatX),
-                                 borrow=borrow),
-                                'int32'
-                            )
-        test_set_x = theano.shared(numpy.asarray(imlist[51500:61500],
-                                               dtype=theano.config.floatX),
-                                 borrow=borrow)
-        test_set_y = T.cast(
-                                theano.shared(numpy.asarray(gtraw[51500:61500],
-                                               dtype=theano.config.floatX),
-                                 borrow=borrow),
-                                'int32'
-                           )
-        valid_set_x = theano.shared(numpy.asarray(imlist[61500:71500],
-                                               dtype=theano.config.floatX),
-                                 borrow=borrow)
-        valid_set_y = T.cast(
-                                theano.shared(numpy.asarray(gtraw[61500:71500],
-                                               dtype=theano.config.floatX),
-                                 borrow=borrow),
-                                'int32'
-                            )
- 
-        datasets = [(train_set_x, train_set_y), (valid_set_x, valid_set_y),
-            (test_set_x, test_set_y)]
-
-        # Store as shared variable in order to print dimensions
-        train_set_y_shared = theano.shared(numpy.asarray(gtraw[0:51500]))
-
-        # Check that the dimensions of an arbitrarily chosen set are equal to those specified above
-        # (In this case, the training set was chosen.)
-        print (('\nDimensions of image set (pixels by bands-per-pixel): %s\n') % ((test_set_x.get_value().shape,)))
-        print (('\nDimensions of ground truth set (number of pixel labels): %s\n') % ((train_set_y_shared.get_value().shape,)))
-        
     else:
 	datasets = load_data(dataset)
 
@@ -547,10 +486,13 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
     # To do: automate savetxt, regardless of number of layers
     numpy.savetxt('weights_layer0.txt', final_weights[0]) 
     numpy.savetxt('weights_layer1.txt', final_weights[1]) 
-    # numpy.savetxt('weights_layer2.txt', final_weights[2]) 
+    numpy.savetxt('weights_layer2.txt', final_weights[2]) 
+    numpy.savetxt('weights_layer3.txt', final_weights[3]) 
     numpy.savetxt('biases_layer0.txt', final_biases[0]) 
     numpy.savetxt('biases_layer1.txt', final_biases[1]) 
-    # numpy.savetxt('biases_layer2.txt', final_biases[2]) 
+    numpy.savetxt('biases_layer2.txt', final_biases[2]) 
+    numpy.savetxt('biases_layer3.txt', final_biases[3]) 
+
 
 if __name__ == '__main__':
     test_DBN()
