@@ -1,4 +1,4 @@
-# Notes on the dataset:
+## Notes on the dataset:
 
 * The Pavia Centre image and its groundtruth in .txt format are located in the Data directory.
 
@@ -6,10 +6,7 @@
 
 * The complete Pavia Centre image cannot be loaded on some machines due to memory restrictions. To avoid crashes, an eighth-image is loaded by default.
 
-The Pavia Centre Image:
-!(http://www.ehu.eus/ccwintco/uploads/a/ab/Pavia_60.png)
-
-# Notes on usage:
+## Notes on usage:
 
 * DBN_writeparams is intended to replace DBN.
 
@@ -17,7 +14,7 @@ The Pavia Centre Image:
 
 * The number of numpy.savetxt lines for weights should match the number of elements in hidden_layers_sizes. Same for biases. Same for numpy.loadtxt in DBN_example.
 
-# To do:
+## To do:
 
 * Create a module for loading trained weights and biases.
 * Create eighths of the ground truth .txt file.
