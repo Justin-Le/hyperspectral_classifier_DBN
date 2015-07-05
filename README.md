@@ -6,6 +6,9 @@
 
 * The complete Pavia Centre image cannot be loaded on some machines due to memory restrictions. To avoid crashes, an eighth-image is loaded by default.
 
+The Pavia Centre Image:
+!(http://www.ehu.eus/ccwintco/uploads/a/ab/Pavia_60.png)
+
 # Notes on usage:
 
 * DBN_writeparams is intended to replace DBN.
