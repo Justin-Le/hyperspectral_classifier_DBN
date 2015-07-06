@@ -3,6 +3,7 @@ import sys
 import time
 
 import numpy
+import cPickle
 
 import theano
 import theano.tensor as T
@@ -13,6 +14,7 @@ from mlp import HiddenLayer
 from rbm import RBM
 
 from load_txt_data import load_txt_data
+from convert_txttopkl import convert_txttopkl
 
 # start-snippet-1
 class DBN(object):
@@ -292,9 +294,9 @@ class DBN(object):
 
         return final_weights, final_biases
 
-def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
-             pretrain_lr=0.01, k=1, training_epochs=300,
-             dataset='text', batch_size=10):
+def test_DBN(finetune_lr=0.1, pretraining_epochs=1,
+             pretrain_lr=0.01, k=1, training_epochs=1,
+             dataset='pavia_centre', batch_size=10):
     """
     Demonstrates how to train and test a Deep Belief Network.
 
@@ -315,7 +317,13 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
     :type batch_size: int
     :param batch_size: the size of a minibatch
     """
-    if dataset == 'text':
+
+    if dataset == 'pavia_centre':
+	# convert_txttopkl converts a series of .txt files to pickled files
+	# and loads them as load_data does.
+        datasets, train_set_x, train_set_y, valid_set_x, valid_set_y, test_set_x, test_set_y = convert_txttopkl()
+
+    elif dataset == 'text':
         datasets, train_set_x, train_set_y, valid_set_x, valid_set_y, test_set_x, test_set_y = load_txt_data()
 
     else:
@@ -482,6 +490,14 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
             ) % (i, len(final_weights[i]), i, len(final_biases[i]))
         )
 
+    # Pickle the trained weights/biases
+    params_file = file('params.pkl', 'wb')
+    for i in xrange(4):
+	cPickle.dump(final_weights[i], params_file, protocol = cPickle.HIGHEST_PROTOCOL)
+	cPickle.dump(final_biases[i], params_file, protocol = cPickle.HIGHEST_PROTOCOL)
+    params_file.close()
+    
+"""
     # Save weights/biases of each layer in separate files
     # To do: automate savetxt, regardless of number of layers
     numpy.savetxt('weights_layer0.txt', final_weights[0]) 
@@ -492,7 +508,7 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
     numpy.savetxt('biases_layer1.txt', final_biases[1]) 
     numpy.savetxt('biases_layer2.txt', final_biases[2]) 
     numpy.savetxt('biases_layer3.txt', final_biases[3]) 
-
+"""
 
 if __name__ == '__main__':
     test_DBN()
